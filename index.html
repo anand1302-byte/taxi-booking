@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f8f8;
+        }
+
+        header,
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .book-btn {
+            display: block;
+            text-align: center;
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .book-btn:hover {
+            background: #219150;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .card {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .card img {
+                width: 40%;
+                height: auto;
+            }
+
+            .card-content {
+                flex: 1;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Booking Portal</h1>
+    </header>
+    <div class="container" id="container">
+    </div>
+    <footer>
+        <p>&copy; 2025 Booking Portal. All Rights Reserved.</p>
+    </footer>
+    <script>
+
+        function bufferToBase64(buffer) {
+            let binary = '';
+            const bytes = new Uint8Array(buffer);
+            const len = bytes.byteLength;
+
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+
+            return window.btoa(binary);
+        }
+
+        async function user() {
+            try {
+                const response = await fetch("https://special-train-975qx64jgp5xfjwr-4000.app.github.dev/api/user");
+                const products = await response.json();
+                console.log(products);
+                const container = document.getElementById("container");
+                products.forEach(user => {
+                    const string = user.image.data.data;
+                    const base = bufferToBase64(string);
+                    const card = document.createElement("div");
+                    card.classList.add("card");
+                    card.innerHTML = `
+                        <img src="data:${user.image.contentType};base64,${base}" alt="Product Image">
+                        <div class="card-content">
+                            <h3>${user.title}</h3>
+                            <p>${user.description}</p>
+                            <p class="price">₹ ${user.price}</p>
+                            <a href="#" class="book-btn">Book Now</a>
+                        </div>
+                    `
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error in loading cards")
+            }
+        }
+
+        user();
+    </script>
+</body>
+
+</html>
